@@ -7,17 +7,16 @@ class Login{
     static callback_ok=null;
     static callback_nok=null;
     static config={
-        cor: "#048",
-        img: "logo.jpg"
+        cor: null,
+        img: null,
+        endpoint: null,
     };
     
 
     //Recebe matricula e password e a configuração da pagina, 
     //a qual se não vier fica null e usa a programação já feita aqui.
-    static login=(callback_ok,callback_nok,config=null)=>{
-        if(config!=null){
-            this.config=config;
-        }
+    static login=(callback_ok,callback_nok,config)=>{
+        this.config=config;
         this.callback_ok=()=>{callback_ok()};
         this.callback_nok=()=>{callback_nok()};
 
@@ -119,23 +118,23 @@ class Login{
     static verificaLog=()=>{
         const mat =document.getElementById("f_username").value;
         const pas =document.getElementById("f_senha").value;
-        const endpoint = `https://2907719b-c4ab-496f-9e6b-e166b1fa43fa-00-1s8d9vampxnbk.riker.replit.dev/?matricula=${mat}&senha=${pas}`;
+        const endpoint = `${this.config.endpoint}/?matricula=${mat}&senha=${pas}`;
         fetch(endpoint)
             .then(res=>res.json())
             .then(res=>{
                 if(res!=null){
-                    this.logado=true;
-                    this.matlogado=mat;
-                    this.nomelogado=res.nome;
-                    this.acessologado=res.acesso;
+                    sessionStorage.setItem("logado","true");
+                    sessionStorage.setItem("matlogado",mat);
+                    sessionStorage.setItem("nomelogado",res.nome);
+                    sessionStorage.setItem("acessologado",res.acesso);
                     this.callback_ok();
                     this.fechar();
                     return true;
                 }else{
-                    this.logado=false;
-                    this.matlogado=null;
-                    this.nomelogado=null;
-                    this.acessologado=null;
+                    sessionStorage.setItem("logado","false");
+                    sessionStorage.setItem("matlogado","");
+                    sessionStorage.setItem("nomelogado","");
+                    sessionStorage.setItem("acessologado","");
                     this.callback_nok();
                     return false;    
                 }     
